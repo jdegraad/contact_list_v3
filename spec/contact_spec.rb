@@ -34,8 +34,12 @@ describe Contact do
     end
 
     it 'takes index/id and returns contact' do
-      expected_string = "Lous Renard\nrenous@gmail.com"
-      expect(Contact.show(2)).to eq expected_string
+      expect(Contact.show(2)).to be_a Contact
+    end
+
+    it "returns string if contact isn't found" do
+      expected_string = 'Sorry cannot find contact with that ID'.red
+      expect(Contact.show(234_21)).to eq expected_string
     end
   end
 

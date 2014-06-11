@@ -47,7 +47,12 @@ class Contact
     end
 
     def show(index)
-      
+      existing_contact = @contacts[index]
+      if !existing_contact
+        'Sorry cannot find contact with that ID'.red
+      else
+        existing_contact
+      end
     end
   end
 
