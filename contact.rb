@@ -45,6 +45,10 @@ class Contact
         contact.email.downcase == email.downcase
       end)
     end
+
+    def show(index)
+      
+    end
   end
 
   @contacts = DEFAULT_CONTACTS

@@ -22,6 +22,7 @@ class Application
     puts "Welcome to the app. What's next?".cyan
     puts ' new      - Create a new contact'.light_green
     puts ' list     - List all contacts'.green
+    puts ' show #id - Find contact by index/id'.magenta
     puts ' find     - Find contact by name or email'.light_red
     puts ' quit     - Exit Application'.red
     print '> '.light_blue
@@ -110,5 +111,23 @@ class Application
   def press_enter_continue
     print "\nPress enter to continue....".yellow
     STDIN.getc
+  end
+
+  def new_contact
+    clear_screen
+    puts 'Create a new contact'
+    puts '===================='
+    print 'Enter the name: '
+    name = gets.chomp
+    print 'Enter the email: '
+    email = gets.chomp
+    Contact.create(name, email)
+  end
+
+  def list_contacts
+    clear_screen
+    puts 'List of all contacts'
+    puts '===================='
+    Contact.all.to_s
   end
 end
