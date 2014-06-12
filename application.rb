@@ -37,7 +37,7 @@ class Application
       new_contact_screen
     when 'list'
       list_contacts_screen
-    when 'find'
+    when /^find/
       find_contact_screen
     when /^show/
       show_contact(input)
