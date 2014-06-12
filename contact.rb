@@ -5,7 +5,7 @@ require 'colorize'
 class Contact
   attr_accessor :name, :email, :phone_numbers
 
-  def initialize(name, email, phone=[])
+  def initialize(name, email, phone = [])
     @name = name
     @email = email
     @phone_numbers = []
@@ -32,7 +32,7 @@ class Contact
   class << self
     attr_reader :contacts
 
-    def create(name, email, phone=[])
+    def create(name, email, phone = [])
       if exists? email
         "#{email} already exists in database".red
       else
