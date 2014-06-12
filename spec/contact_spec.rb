@@ -9,7 +9,7 @@ describe Contact do
   end
 
   describe 'initialization' do
-    subject(:contact) { Contact.new 'Test', 'test@gmail.com' }
+    subject(:contact) { Contact.new 'Test', 'test@gmail.com', ['Cell', '778-713-8214'] }
 
     it 'creates contact' do
       expect(contact).to be_a Contact
@@ -23,9 +23,14 @@ describe Contact do
       expect(contact.email).to eq 'test@gmail.com'
     end
 
-    it 'can take optional phone number'
+    it 'sets phonenumber' do
+      expect(contact.phone_numbers).to eq [['Cell', '778-713-8214']]
+    end
 
-    it 'can take multiple phone numbers'
+    it 'can take multiple phone numbers' do
+      contact_phone = Contact.new 'Test', 'test@g.ca', ['Cell', '778-713-8214', 'Home', '604-123-2342']
+      expect(contact_phone.phone_numbers).to eq [['Cell', '778-713-8214'], ['Home', '604-123-2342']]
+    end
   end
 
   describe '.show' do
@@ -50,7 +55,7 @@ describe Contact do
 
     it 'displays index name and email' do
       contact_string = Contact.new('Test', 'Test@g.ca').to_s
-      expect_string = '(Test) Test@g.ca'.green
+      expect_string = "(Test) Test@g.ca\n   ".green + "No numbers stored\n".red
       expect(contact_string).to eq expect_string
     end
   end
@@ -61,21 +66,30 @@ describe Contact do
       expect(Contact).to respond_to :create
     end
 
-    context 'method exists' do
-      it 'saves contact to class variable' do
-        Contact.create 'Doil Sel', 'dsel@gmail.com'
-        contacts = Contact.contacts.size
-        expect(contacts).to eq 6
-      end
+    it 'saves contact to class variable' do
+      Contact.create 'Doil Sel', 'dsel@gmail.com'
+      contacts = Contact.contacts.size
+      expect(contacts).to eq 6
+    end
 
-      it 'does not save duplicate entry' do
-        expect(Contact).to receive(:exists?).and_return(true)
-        Contact.create 'Onyx Ratt', 'Rottxy@facebook.com'
-        contact = Contact.contacts.size
-        expect(contact).to eq 5
-      end
+    it 'does not save duplicate entry' do
+      expect(Contact).to receive(:exists?).and_return(true)
+      Contact.create 'Onyx Ratt', 'Rottxy@facebook.com'
+      contact = Contact.contacts.size
+      expect(contact).to eq 5
+    end
 
-      it 'saves contacts with phone numbers'
+    it 'saves contacts with phone numbers' do
+      Contact.create 'Oatt Fjil', 'Ofil@facebook.com', %w(Mobile 778-714-6452)
+      contact = Contact.contacts.size
+      expect(contact).to eq 6
+    end
+
+    it 'saves contacts with multiple numbers' do
+      Contact.create 'Oatt Fjil', 'Ofil@facebook.com', %w(Moblie, 778-714-6452 Home 778-323-2421)
+
+      contact = Contact.contacts.size
+      expect(contact).to eq 6
     end
   end
 
@@ -119,6 +133,24 @@ describe Contact do
 
     it 'returns false if contact does not exist' do
       expect(Contact.exists? 'Rofttxy@facebook.com').to eq false
+    end
+  end
+
+  describe '#process_numbers' do
+    let(:contact) { Contact.new('Test', 'example') }
+
+    it 'exists' do
+      expect(contact).to respond_to(:process_numbers)
+    end
+
+    it 'adds single number to phone variable' do
+      numbers = %w(Mobile 778-714-6452)
+      expect(contact.process_numbers(numbers)).to eq [%w(Mobile 778-714-6452)]
+    end
+
+    it 'adds multiple numbers to the phone variable' do
+      numbers = %w(Mobile 778-723-2342 Home 123-524-2342)
+      expect(contact.process_numbers(numbers)).to eq [%w(Mobile 778-723-2342), %w(Home 123-524-2342)]
     end
   end
 end

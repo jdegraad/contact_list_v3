@@ -82,21 +82,48 @@ class Application
   def find_contact(input)
     contacts_found = Contact.find(input)
     contact_string = "\n"
-    contacts_found.each do |contact|
-      contact_string << "#{contact}\n"
+    if !contacts_found.empty?
+      contacts_found.each do |contact|
+        contact_string << "#{contact}\n"
+      end
+      contact_string
+    else
+      'Sorry no contact found with that name'.red
     end
-    contact_string
   end
 
   def new_contact(name, email)
     clear_screen
-    if Contact.exists? email
-      puts "Sorry #{email} is already assigned to a person".red
+    puts "Adding #{name} to the database".red
+    puts '=============================='.red
+    print 'Would you like to add phone numbers?(Y/N):  '.yellow
+    input = gets.chomp.downcase
+    if input == 'y'
+      number = enter_numbers
+      clear_screen
+      puts Contact.create name, email, number
     else
-      puts 'Contact added to database'.green
+      clear_screen
+      puts Contact.create name, email
     end
-    Contact.create name, email
     press_enter_continue
+  end
+
+  def enter_numbers
+    name_and_number = []
+    adding_numbers = true
+    while adding_numbers
+      print 'Enter if its a Mobile, Home, etc.: '.yellow
+      name = gets.chomp
+      print 'Enter your number: '.yellow
+      number = gets.chomp
+      name_and_number << name
+      name_and_number << number
+      print 'Would you like to add another?(Y/N): '.light_blue
+      input = gets.chomp.downcase
+      break if input == 'n'
+    end
+    name_and_number
   end
 
   def new_contact_screen
